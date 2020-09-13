@@ -71,7 +71,7 @@ all_tissues = as.data.frame(rbind(a1, m1, i1, hypo1))
 bin_mat = dcast(all_tissues, Strain ~ gene, value.var = 'expression_value', fun.aggregate = mean)
 row.names(bin_mat) = bin_mat$Strain
 bin_mat$Strain = NULL
-row.names(bin_mat)[1:10]
+#row.names(bin_mat)[1:10]
 bin_mat = bin_mat[row.names(bin_mat) %in% row.names(h2),]
 
 
@@ -84,7 +84,7 @@ cc3$gene_symbol = row.names(cc3)
 cc3 = cc3[order(cc3$Ssec_score, decreasing = T),]
 summary(cc3$Ssec_score)
 scores=cc3
-mean(scores$Ssec_score + (sd(scores$Ssec_score)*2))
+#mean(scores$Ssec_score + (sd(scores$Ssec_score)*2))
 scores$tissue =gsub(".*_","",scores$gene_symbol)
 scores$gene_only =gsub("_.*","",scores$gene_symbol)
 
@@ -163,12 +163,13 @@ scores = scores[order(scores$normalized_nonrestored, decreasing=T),]
 ssec_table = scores
 write.table(ssec_table, file = 'Cross-tissue correlations with nonrestored liver clock genes - normalized to global non-circadian ssecs.txt', sep = '\t', row.names=F)
 
-colors <- c("darkorange1", "darkorchid4","dodgerblue1","deeppink1")
+##CV## Let's change the colors
+colors <- c("red", "gold","dodgerblue1","green")
 names(colors) = c("adipose", "muscle", "intestine", "hypothalamus")
 scores$tissue_col = colors[match(scores$tissue, names(colors))]
 
 head(scores)
-### this will take a long time ### ggplot(scores, aes(x=fct_reorder2(gene_symbol, normalized_nonrestored, normalized_nonrestored, .desc = T), y=normalized_nonrestored)) + geom_col(fill=scores$tissue_col) + theme(axis.text.x = element_text(angle=90, size=8), plot.title = element_text(hjust=0.5)) +ggtitle('All genes enriched for liver not_restored circadian pathways') + theme_minimal() + geom_hline(yintercept=mean(scores$normalized_nonrestored+ (sd(scores$normalized_nonrestored)*2)), linetype="dashed", color = "gray9",cex=3)+ xlab('gene') + ylab('cross-tissue scorec (Ssec) / non-liver ssec') + theme_classic()
+ggplot(scores, aes(x=fct_reorder2(gene_symbol, normalized_nonrestored, normalized_nonrestored, .desc = T), y=normalized_nonrestored)) + geom_col(fill=scores$tissue_col) + theme(axis.text.x = element_text(angle=90, size=8), plot.title = element_text(hjust=0.5)) +ggtitle('All genes enriched for liver not_restored circadian pathways') + theme_minimal() + geom_hline(yintercept=mean(scores$normalized_nonrestored+ (sd(scores$normalized_nonrestored)*2)), linetype="dashed", color = "gray9",cex=3)+ xlab('gene') + ylab('cross-tissue scorec (Ssec) / non-liver ssec') + theme_classic() ### this will take a long time ### 
 
 
 scores1 = scores[1:20,]
